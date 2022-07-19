@@ -41,5 +41,4 @@ public class DetailController {
 
     return ResponseEntity.created(uri).body(product);
   }
-
 }
