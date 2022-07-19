@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(name = "/financial")
+@RequestMapping(value = "/financial")
 public class FinancialController {
 
   FinancialService financialService;
@@ -22,8 +22,10 @@ public class FinancialController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<FinancialDto> getFinancialById(@PathVariable Long id){
+  public ResponseEntity<FinancialDto> getFinancialById(@PathVariable Long id) throws InterruptedException {
     FinancialDto financial = financialService.getFinancialById(id);
+
+    Thread.sleep(3000);
     return ResponseEntity.ok(financial);
   }
 }

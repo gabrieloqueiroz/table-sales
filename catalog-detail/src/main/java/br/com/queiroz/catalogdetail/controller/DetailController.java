@@ -22,16 +22,18 @@ public class DetailController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<DetailDto> findById(@PathVariable Long id) {
+  public ResponseEntity<DetailDto> findById(@PathVariable Long id) throws InterruptedException {
     DetailDto product = detailService.findById(id);
+
+    Thread.sleep(3000);
 
     return ResponseEntity.ok(product);
   }
 
-  //  @GetMapping("/value/{/amount}")
-  //  public ResponseEntity <?> findByRangeValue(@PathVariable Long amount){
-
-  //  }
+//    @GetMapping("/value/{/amount}")
+//    public ResponseEntity <?> findByRangeValue(@PathVariable Long amount){
+//
+//    }
 
   @PostMapping
   public ResponseEntity<DetailDto> createProduct(@RequestBody DetailDto request, UriComponentsBuilder uriBuilder) {
