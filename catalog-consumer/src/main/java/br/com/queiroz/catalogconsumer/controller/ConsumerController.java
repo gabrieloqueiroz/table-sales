@@ -4,11 +4,10 @@ import br.com.queiroz.catalogconsumer.dto.FullDetailDto;
 import br.com.queiroz.catalogconsumer.service.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.function.Consumer;
 
 @RestController
@@ -27,5 +26,15 @@ public class ConsumerController {
     FullDetailDto fullDetail = consumerService.getFullDetail(id);
 
     return ResponseEntity.ok(fullDetail);
+  }
+
+  @PostMapping("/create")
+  public ResponseEntity<FullDetailDto>  createProduct(@RequestBody FullDetailDto request, UriComponentsBuilder uriCB){
+    FullDetailDto fullDetailDto = consumerService.createProduct(request);
+
+    URI uri = uriCB.path("/consumer/{id}").buildAndExpand(fullDetailDto.getId()).toUri();
+
+    return ResponseEntity.created(uri).body(fullDetailDto);
+
   }
 }

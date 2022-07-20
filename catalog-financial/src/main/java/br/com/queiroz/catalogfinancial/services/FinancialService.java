@@ -27,4 +27,11 @@ public class FinancialService {
 
     return modelMapper.map(financial, FinancialDto.class);
   }
+
+  public FinancialDto createFinancial(FinancialDto financialDto) {
+    Financial financial = modelMapper.map(financialDto, Financial.class);
+    Financial financialSaved = financialRepository.save(financial);
+
+    return modelMapper.map(financialSaved, FinancialDto.class);
+  }
 }

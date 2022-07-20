@@ -13,9 +13,20 @@ import reactor.netty.http.client.HttpClient;
 public class SelfConfiguration {
 
   @Bean
-  public WebClient webClient() {
+  public WebClient webClientDetail(WebClient.Builder builder) {
     HttpClient option = HttpClient.create().option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 40000);
-    return WebClient.builder().clientConnector(new ReactorClientHttpConnector(option))
+    return builder
+        .clientConnector(new ReactorClientHttpConnector(option))
+        .baseUrl("http://localhost:8080/detail")
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
+  }
+
+  @Bean
+  public WebClient webClientFinancial(WebClient.Builder builder) {
+    HttpClient option = HttpClient.create().option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 40000);
+    return builder
+        .clientConnector(new ReactorClientHttpConnector(option))
+        .baseUrl("http://localhost:8081/financial")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
   }
 }

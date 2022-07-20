@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 public class FullDetailDto {
   private Long id;
   private String description;
+  private String manual;
   private String color;
   private BigDecimal salePrice;
+  private BigDecimal purchasePrice;
 }

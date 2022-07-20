@@ -2,13 +2,12 @@ package br.com.queiroz.catalogfinancial.controller;
 
 import br.com.queiroz.catalogfinancial.dto.FinancialDto;
 import br.com.queiroz.catalogfinancial.services.FinancialService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/financial")
@@ -27,5 +26,14 @@ public class FinancialController {
 
     Thread.sleep(3000);
     return ResponseEntity.ok(financial);
+  }
+
+  @PostMapping
+  public ResponseEntity<FinancialDto> createFinancial(@RequestBody FinancialDto financialDto, UriComponentsBuilder builder){
+    FinancialDto createdFinancial = financialService.createFinancial(financialDto);
+
+    URI uri = builder.path("/financial/{id}").buildAndExpand(createdFinancial.getId()).toUri();
+
+    return ResponseEntity.created(uri).body(createdFinancial);
   }
 }
