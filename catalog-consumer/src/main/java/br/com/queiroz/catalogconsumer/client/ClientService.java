@@ -5,7 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ClientService {
@@ -60,5 +65,16 @@ public class ClientService {
     }).block();
 
     return fullProduct;
+  }
+
+  public List<FullDetailDto> getFinancialByRange(BigDecimal min, BigDecimal max) {
+    Flux<FullDetailDto> fullDetailDtoFlux =
+        webClientFinancial
+            .get()
+            .uri("/range?min={min}&max={max}", min, max)
+            .retrieve()
+            .bodyToFlux(FullDetailDto.class);
+
+    return fullDetailDtoFlux.collectList().block();
   }
 }

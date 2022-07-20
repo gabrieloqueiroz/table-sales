@@ -5,6 +5,9 @@ import br.com.queiroz.catalogconsumer.dto.FullDetailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Service
 public class ConsumerService {
 
@@ -21,5 +24,9 @@ public class ConsumerService {
 
   public FullDetailDto createProduct(FullDetailDto request) {
     return clientService.createProductWithPrice(request);
+  }
+
+  public List<FullDetailDto> getFinancialByRange(BigDecimal min, BigDecimal max) {
+    return clientService.getFinancialByRange(min, max);
   }
 }

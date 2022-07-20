@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import java.util.function.Consumer;
 
 @RestController
@@ -24,6 +26,13 @@ public class ConsumerController {
   @GetMapping("/{id}")
   public ResponseEntity<FullDetailDto> getProductWithPrice(@PathVariable Long id){
     FullDetailDto fullDetail = consumerService.getFullDetail(id);
+
+    return ResponseEntity.ok(fullDetail);
+  }
+
+  @GetMapping("/range")
+  public ResponseEntity<List<FullDetailDto>> getFinancialByRange(@RequestParam BigDecimal min, @RequestParam BigDecimal max ){
+    List<FullDetailDto> fullDetail = consumerService.getFinancialByRange(min, max);
 
     return ResponseEntity.ok(fullDetail);
   }
