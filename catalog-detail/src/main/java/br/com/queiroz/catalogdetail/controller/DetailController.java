@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/detail")
@@ -24,8 +25,6 @@ public class DetailController {
   public ResponseEntity<DetailDto> findById(@PathVariable Long id) throws InterruptedException {
     DetailDto product = detailService.findById(id);
 
-    Thread.sleep(3000);
-
     return ResponseEntity.ok(product);
   }
 
@@ -36,5 +35,11 @@ public class DetailController {
     URI uri = uriBuilder.path("/detail/{id}").buildAndExpand(product.getId()).toUri();
 
     return ResponseEntity.created(uri).body(product);
+  }
+
+  @PostMapping("/listid")
+  public ResponseEntity<List<DetailDto>> findByIds(@RequestBody List<Long> ids){
+    List<DetailDto> byIds = detailService.findByIds(ids);
+    return ResponseEntity.ok(byIds);
   }
 }

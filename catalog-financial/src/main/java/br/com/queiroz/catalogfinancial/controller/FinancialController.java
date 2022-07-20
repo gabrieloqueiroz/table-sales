@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping(value = "/financial")
 public class FinancialController {
 
-  FinancialService financialService;
+  private final FinancialService financialService;
 
   @Autowired
   public FinancialController(FinancialService financialService){
@@ -26,7 +26,6 @@ public class FinancialController {
   public ResponseEntity<FinancialDto> getFinancialById(@PathVariable Long id) throws InterruptedException {
     FinancialDto financial = financialService.getFinancialById(id);
 
-    Thread.sleep(3000);
     return ResponseEntity.ok(financial);
   }
   @GetMapping("/range")

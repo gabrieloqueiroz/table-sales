@@ -9,8 +9,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -74,6 +74,21 @@ public class ClientService {
             .uri("/range?min={min}&max={max}", min, max)
             .retrieve()
             .bodyToFlux(FullDetailDto.class);
+
+    return fullDetailDtoFlux.collectList().block();
+  }
+
+  public List<FullDetailDto> getDetailById(List<FullDetailDto> financialByRange) {
+
+    List<Long> ids = financialByRange.stream().map(FullDetailDto::getId).toList();
+
+    Flux<FullDetailDto> fullDetailDtoFlux =
+      webClientDetail
+          .post()
+          .uri("/listid")
+          .body(BodyInserters.fromValue(ids))
+          .retrieve()
+          .bodyToFlux(FullDetailDto.class);
 
     return fullDetailDtoFlux.collectList().block();
   }
