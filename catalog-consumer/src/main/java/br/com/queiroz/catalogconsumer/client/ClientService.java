@@ -20,9 +20,17 @@ public class ClientService {
   }
 
   public FullDetailDto getProductWithPrice(Long id) {
-    Mono<FullDetailDto> fullDetailDtoMono = webClientDetail.get().uri("/{id}", id).retrieve().bodyToMono(FullDetailDto.class);
+    Mono<FullDetailDto> fullDetailDtoMono = webClientDetail
+        .get()
+        .uri("/{id}", id)
+        .retrieve()
+        .bodyToMono(FullDetailDto.class);
 
-    Mono<FullDetailDto> fullFinancialDtoMono = webClientFinancial.get().uri("/{id}", id).retrieve().bodyToMono(FullDetailDto.class);
+    Mono<FullDetailDto> fullFinancialDtoMono = webClientFinancial
+        .get()
+        .uri("/{id}", id)
+        .retrieve()
+        .bodyToMono(FullDetailDto.class);
 
     FullDetailDto detailFull = Mono.zip(fullDetailDtoMono, fullFinancialDtoMono).map(p -> {
       p.getT1().setSalePrice(p.getT2().getSalePrice());

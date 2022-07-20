@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/financial")
@@ -26,6 +28,12 @@ public class FinancialController {
 
     Thread.sleep(3000);
     return ResponseEntity.ok(financial);
+  }
+  @GetMapping("/range")
+  public ResponseEntity<List<FinancialDto>> getFinancialByRangeAmount(@RequestParam BigDecimal min, @RequestParam BigDecimal max){
+    List<FinancialDto> financialByRangePrice = financialService.getFinancialByRangePrice(min, max);
+
+    return ResponseEntity.ok(financialByRangePrice);
   }
 
   @PostMapping

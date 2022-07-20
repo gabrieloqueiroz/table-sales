@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FinancialService {
@@ -33,5 +36,13 @@ public class FinancialService {
     Financial financialSaved = financialRepository.save(financial);
 
     return modelMapper.map(financialSaved, FinancialDto.class);
+  }
+
+  public List<FinancialDto> getFinancialByRangePrice(BigDecimal min, BigDecimal max) {
+    List<Financial> byRangePrice = financialRepository.getByRangePrice(min, max);
+
+    List<FinancialDto> FinancialDto = byRangePrice.stream().map(financial -> modelMapper.map(financial, FinancialDto.class)).toList();
+
+    return FinancialDto;
   }
 }

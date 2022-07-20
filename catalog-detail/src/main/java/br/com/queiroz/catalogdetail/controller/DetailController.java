@@ -29,11 +29,6 @@ public class DetailController {
     return ResponseEntity.ok(product);
   }
 
-//    @GetMapping("/value/{/amount}")
-//    public ResponseEntity <?> findByRangeValue(@PathVariable Long amount){
-//
-//    }
-
   @PostMapping
   public ResponseEntity<DetailDto> createProduct(@RequestBody DetailDto request, UriComponentsBuilder uriBuilder) {
     DetailDto product = detailService.createProduct(request);
