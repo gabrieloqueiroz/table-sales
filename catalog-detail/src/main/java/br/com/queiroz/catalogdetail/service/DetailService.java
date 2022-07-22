@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +39,7 @@ public class DetailService {
     return modelMapper.map(saved, DetailDto.class);
   }
 
-  public List<DetailDto> findByIds(List<Long> ids) {
+  public List<DetailDto> findByIds(Set<Long> ids) {
     List<Detail> details = detailRepository.findByIds(ids);
     List<DetailDto> detailsDto = details.stream().map(dtl -> modelMapper.map(dtl, DetailDto.class)).toList();
     return detailsDto;

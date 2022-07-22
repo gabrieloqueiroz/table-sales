@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface DetailRepository extends JpaRepository<Detail, Long> {
@@ -14,7 +15,7 @@ public interface DetailRepository extends JpaRepository<Detail, Long> {
   @Query(value = "SELECT * FROM detail d "
       + "WHERE d.id IN (:ids)", nativeQuery = true)
   List<Detail> findByIds(
-      @Param("ids") List<Long> ids
+      @Param("ids") Set<Long> ids
   );
 
 }

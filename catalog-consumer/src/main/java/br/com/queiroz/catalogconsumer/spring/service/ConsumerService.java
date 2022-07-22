@@ -1,15 +1,13 @@
-package br.com.queiroz.catalogconsumer.service;
+package br.com.queiroz.catalogconsumer.spring.service;
 
-import br.com.queiroz.catalogconsumer.client.ClientService;
-import br.com.queiroz.catalogconsumer.dto.FullDetailDto;
+import br.com.queiroz.catalogconsumer.spring.client.ClientService;
+import br.com.queiroz.catalogconsumer.spring.dto.FullDetailDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class ConsumerService {

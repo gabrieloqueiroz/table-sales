@@ -1,4 +1,4 @@
-package br.com.queiroz.catalogconsumer.configuration;
+package br.com.queiroz.catalogconsumer.spring.configuration;
 
 import io.netty.channel.ChannelOption;
 import org.springframework.context.annotation.Bean;

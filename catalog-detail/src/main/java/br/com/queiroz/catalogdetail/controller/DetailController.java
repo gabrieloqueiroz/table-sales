@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/detail")
@@ -38,7 +39,7 @@ public class DetailController {
   }
 
   @PostMapping("/listid")
-  public ResponseEntity<List<DetailDto>> findByIds(@RequestBody List<Long> ids){
+  public ResponseEntity<List<DetailDto>> findByIds(@RequestBody Set<Long> ids){
     List<DetailDto> byIds = detailService.findByIds(ids);
     return ResponseEntity.ok(byIds);
   }

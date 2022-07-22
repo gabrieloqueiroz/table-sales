@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>catalog-consumer</artifactId>
+    <dependencies>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
