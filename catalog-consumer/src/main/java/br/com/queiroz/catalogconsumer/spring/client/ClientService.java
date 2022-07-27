@@ -1,6 +1,8 @@
 package br.com.queiroz.catalogconsumer.spring.client;
 
 import br.com.queiroz.catalogconsumer.spring.dto.FullDetailDto;
+import br.com.queiroz.catalogconsumer.spring.subordinated.DetailService;
+import br.com.queiroz.catalogconsumer.spring.subordinated.FinancialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -16,27 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class ClientService {
 
-  private WebClient webClientDetail;
-  private WebClient webClientFinancial;
+  private DetailService detailService;
+  private FinancialService financialService;
 
   @Autowired
-  public ClientService(WebClient webClientDetail, WebClient webClientFinancial) {
-    this.webClientDetail = webClientDetail;
-    this.webClientFinancial = webClientFinancial;
+  public ClientService(DetailService detailService, FinancialService financialService) {
+    this.detailService = detailService;
+    this.financialService = financialService;
   }
 
   public FullDetailDto getProductWithPrice(Long id) {
-    Mono<FullDetailDto> fullDetailDtoMono = webClientDetail
-        .get()
-        .uri("/{id}", id)
-        .retrieve()
-        .bodyToMono(FullDetailDto.class);
-
-    Mono<FullDetailDto> fullFinancialDtoMono = webClientFinancial
-        .get()
-        .uri("/{id}", id)
-        .retrieve()
-        .bodyToMono(FullDetailDto.class);
+    Mono<FullDetailDto> fullDetailDtoMono = detailService.findById(id);
+    Mono<FullDetailDto> fullFinancialDtoMono = financialService.financialById(id);
 
     FullDetailDto detailFull = Mono.zip(fullDetailDtoMono, fullFinancialDtoMono).map(p -> {
       p.getT1().setSalePrice(p.getT2().getSalePrice());
@@ -47,17 +40,8 @@ public class ClientService {
   }
 
   public FullDetailDto createProductWithPrice(FullDetailDto request) {
-    Mono<FullDetailDto> fullDetailDtoMono = webClientDetail
-        .post()
-        .body(BodyInserters.fromValue(request))
-        .retrieve()
-        .bodyToMono(FullDetailDto.class);
-
-    Mono<FullDetailDto> fullFinancialDtoMono = webClientFinancial
-        .post()
-        .body(BodyInserters.fromValue(request))
-        .retrieve()
-        .bodyToMono(FullDetailDto.class);
+    Mono<FullDetailDto> fullDetailDtoMono = detailService.createProduct(request);
+    Mono<FullDetailDto> fullFinancialDtoMono = financialService.createProduct(request);
 
     FullDetailDto fullProduct = Mono.zip(fullDetailDtoMono, fullFinancialDtoMono).map(p -> {
       p.getT1().setSalePrice(p.getT2().getSalePrice());
@@ -69,28 +53,13 @@ public class ClientService {
   }
 
   public List<FullDetailDto> getFinancialByRange(BigDecimal min, BigDecimal max) {
-    Flux<FullDetailDto> fullDetailDtoFlux =
-        webClientFinancial
-            .get()
-            .uri("/range?min={min}&max={max}", min, max)
-            .retrieve()
-            .bodyToFlux(FullDetailDto.class);
-
+    Flux<FullDetailDto> fullDetailDtoFlux = financialService.findByListIds(min, max);
     return fullDetailDtoFlux.collectList().block();
   }
 
   public List<FullDetailDto> getDetailById(List<FullDetailDto> financialByRange) {
-
     Set<Long> ids = financialByRange.stream().map(FullDetailDto::getId).collect(Collectors.toSet());
-
-    Flux<FullDetailDto> fullDetailDtoFlux =
-      webClientDetail
-          .post()
-          .uri("/listid")
-          .body(BodyInserters.fromValue(ids))
-          .retrieve()
-          .bodyToFlux(FullDetailDto.class);
-
+    Flux<FullDetailDto> fullDetailDtoFlux = detailService.findByListIds(ids);
     return fullDetailDtoFlux.collectList().block();
   }
 }

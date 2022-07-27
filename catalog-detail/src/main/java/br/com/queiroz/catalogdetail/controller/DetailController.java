@@ -2,6 +2,8 @@ package br.com.queiroz.catalogdetail.controller;
 
 import br.com.queiroz.catalogdetail.dto.DetailDto;
 import br.com.queiroz.catalogdetail.service.DetailService;
+import br.om.queiroz.utils.ConstantsUtils;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/detail")
+@RequestMapping(value = ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_DETAIL_SERVICE)
 public class DetailController {
 
   private final DetailService detailService;
@@ -38,8 +40,8 @@ public class DetailController {
     return ResponseEntity.created(uri).body(product);
   }
 
-  @PostMapping("/listid")
-  public ResponseEntity<List<DetailDto>> findByIds(@RequestBody Set<Long> ids){
+  @PostMapping(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_DETAIL_LIST_IDS)
+  public ResponseEntity<List<DetailDto>> findByListIds(@RequestBody Set<Long> ids){
     List<DetailDto> byIds = detailService.findByIds(ids);
     return ResponseEntity.ok(byIds);
   }

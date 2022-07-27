@@ -10,6 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>catalog-financial</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>br.com.queiroz</groupId>
+            <artifactId>catalog-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

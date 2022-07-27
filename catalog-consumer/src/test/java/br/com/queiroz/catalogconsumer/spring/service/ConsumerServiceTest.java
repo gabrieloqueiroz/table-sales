@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static br.com.queiroz.catalogconsumer.spring.util.FullDetailMother.getDetailDto;
 import static br.com.queiroz.catalogconsumer.spring.util.FullDetailMother.getFinancialDto;

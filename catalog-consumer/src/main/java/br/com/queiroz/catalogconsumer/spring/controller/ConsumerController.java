@@ -2,6 +2,7 @@ package br.com.queiroz.catalogconsumer.spring.controller;
 
 import br.com.queiroz.catalogconsumer.spring.dto.FullDetailDto;
 import br.com.queiroz.catalogconsumer.spring.service.ConsumerService;
+import br.om.queiroz.utils.ConstantsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping(value = "/consumer")
+@RequestMapping(value = ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_CONSUMER_SERVICE)
 public class ConsumerController {
 
   private ConsumerService consumerService;
@@ -33,7 +33,7 @@ public class ConsumerController {
     }
   }
 
-  @GetMapping("/range")
+  @GetMapping(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_RANGE)
   public ResponseEntity<List<FullDetailDto>> getFinancialByRange(@RequestParam BigDecimal min, @RequestParam BigDecimal max ){
     try {
       List<FullDetailDto> fullDetail = consumerService.getFinancialByRange(min, max);
@@ -43,11 +43,11 @@ public class ConsumerController {
     }
   }
 
-  @PostMapping("/create")
+  @PostMapping(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_CREATE)
   public ResponseEntity<FullDetailDto>  createProduct(@RequestBody FullDetailDto request, UriComponentsBuilder uriCB){
     try {
       FullDetailDto fullDetailDto = consumerService.createProduct(request);
-      URI uri = uriCB.path("/consumer/{id}").buildAndExpand(fullDetailDto.getId()).toUri();
+      URI uri = uriCB.path(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_CONSUMER_SERVICE + ConstantsUtils.PATH_SEPARATOR + "{id}").buildAndExpand(fullDetailDto.getId()).toUri();
       return ResponseEntity.created(uri).body(fullDetailDto);
     }catch (Exception e){
       return ResponseEntity.badRequest().build();
