@@ -3,26 +3,32 @@ package br.com.queiroz.catalogconsumer.spring.client;
 import br.com.queiroz.catalogconsumer.spring.ConsumerApplication;
 import br.com.queiroz.catalogconsumer.spring.configuration.SelfConfiguration;
 import br.com.queiroz.catalogconsumer.spring.dto.FullDetailDto;
+import br.com.queiroz.catalogconsumer.spring.subordinated.config.DetailServiceConfiguration;
+import br.com.queiroz.catalogconsumer.spring.subordinated.config.FinancialServiceConfiguration;
 import br.com.queiroz.catalogconsumer.spring.util.FullDetailMother;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.QueueDispatcher;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,22 +37,25 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@AutoConfigureWebTestClient
-@SpringBootTest(classes = { ConsumerApplication.class}, webEnvironment =SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableAutoConfiguration(exclude={ DataSourceAutoConfiguration.class})
+@ComponentScan("br.com.queiroz.catalogconsumer.spring.*")
+@EntityScan("br.com.queiroz.catalogconsumer.spring.*")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(classes = { ConsumerApplication.class, SelfConfiguration.class }, webEnvironment =SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ClientServiceTest {
-
-  private static MockWebServer webServerDetail;
-  private static MockWebServer webServerFinancial;
+  @Autowired
+  private ClientService clientService;
 
   private static MockWebServer mockServer;
   public static String serverBaseUrl;
   @MockBean
-  private SelfConfiguration selfConfiguration;
-  @Autowired
-  private ClientService clientService;
+  private DetailServiceConfiguration detailServiceConfiguration;
+  @MockBean
+  private FinancialServiceConfiguration financialServiceConfiguration;
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   @BeforeEach
@@ -55,19 +64,23 @@ public class ClientServiceTest {
     mockServer.setDispatcher(new QueueDispatcher());
     mockServer.start();
     serverBaseUrl = "http://127.0.0.1:" + mockServer.getPort();
-    when(selfConfiguration.getUrlDetailService()).thenReturn(serverBaseUrl);
-    when(selfConfiguration.getUrlFinancialService()).thenReturn(serverBaseUrl);
+    when(detailServiceConfiguration.getUrlCreateProduct()).thenReturn(serverBaseUrl);
+    when(detailServiceConfiguration.getUrlFindById(any())).thenReturn(serverBaseUrl);
+    when(detailServiceConfiguration.getUrl()).thenReturn(serverBaseUrl);
+    when(detailServiceConfiguration.getUrlFindByListId()).thenReturn(serverBaseUrl);
+    when(financialServiceConfiguration.getUrl()).thenReturn(serverBaseUrl);
+    when(financialServiceConfiguration.getUrlFinancialById(any())).thenReturn(serverBaseUrl);
+    when(financialServiceConfiguration.getUrlCreateFinancial()).thenReturn(serverBaseUrl);
+    when(financialServiceConfiguration.getUrlFinancialByListId(any(), any())).thenReturn(serverBaseUrl);
   }
 
   @AfterEach
   public void stopAll() throws IOException {
-    webServerDetail.close();
-    webServerFinancial.close();
     mockServer.shutdown();
   }
 
   @Test
-  public void should_return_product_with_price() throws JsonProcessingException {
+   public void should_return_product_with_price() throws JsonProcessingException {
     //Given
     FullDetailDto detailDto = FullDetailMother.getDetailDto();
     FullDetailDto financialDto = FullDetailMother.getFinancialDto();
@@ -98,11 +111,11 @@ public class ClientServiceTest {
     FullDetailDto detailDto = FullDetailMother.getDetailDto();
     FullDetailDto financialDto = FullDetailMother.getFinancialDto();
 
-    webServerDetail.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(detailDto))
-        .addHeader("Content-Type", "application/json"));
+    mockServer.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(detailDto))
+        .addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE));
 
-    webServerFinancial.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(financialDto))
-        .addHeader("Content-Type", "application/json"));
+    mockServer.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(financialDto))
+        .addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE));
 
     //When
     FullDetailDto response = clientService.createProductWithPrice(expectedFullDto);
@@ -125,8 +138,8 @@ public class ClientServiceTest {
     BigDecimal min = new BigDecimal(90);
     BigDecimal max = new BigDecimal(200);
 
-    webServerFinancial.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(expectedFinancial))
-        .addHeader("Content-Type", "application/json"));
+    mockServer.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(expectedFinancial))
+        .addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE));
 
     //When
     List<FullDetailDto> response = clientService.getFinancialByRange(min, max);
@@ -142,8 +155,8 @@ public class ClientServiceTest {
     List<FullDetailDto> expectedDetails =
         Arrays.asList(FullDetailMother.getDetailDto(), FullDetailMother.getDetailDto(), FullDetailMother.getDetailDto());
 
-    webServerDetail.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(expectedDetails))
-        .addHeader("Content-Type", "application/json"));
+    mockServer.enqueue(new MockResponse().setResponseCode(200).setBody(OBJECT_MAPPER.writeValueAsString(expectedDetails))
+        .addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE));
 
     //When
     List<FullDetailDto> response = clientService.getDetailById(expectedDetails);

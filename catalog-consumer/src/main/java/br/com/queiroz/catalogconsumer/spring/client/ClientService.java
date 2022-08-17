@@ -5,8 +5,6 @@ import br.com.queiroz.catalogconsumer.spring.subordinated.DetailService;
 import br.com.queiroz.catalogconsumer.spring.subordinated.FinancialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
