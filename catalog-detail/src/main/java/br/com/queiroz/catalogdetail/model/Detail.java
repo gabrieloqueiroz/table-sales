@@ -1,10 +1,7 @@
 package br.com.queiroz.catalogdetail.model;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,11 +11,12 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Detail {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long Id;
+  private Long id;
 
   @NotNull
   @Column(name = "description")
@@ -31,4 +29,9 @@ public class Detail {
   @NotNull
   @Column(name = "color")
   private String color;
+
+  @Override
+  public String toString() {
+    return id + " " + description + " " + manual + " " + color;
+  }
 }

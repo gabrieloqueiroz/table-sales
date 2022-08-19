@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static br.com.queiroz.catalogconsumer.spring.util.FullDetailMother.getDetailDto;
 import static br.com.queiroz.catalogconsumer.spring.util.FullDetailMother.getFinancialDto;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -50,6 +50,7 @@ public class ConsumerServiceTest {
     assertEquals(expectedFullDto.getDescription(), response.getDescription());
     assertEquals(expectedFullDto.getManual(), response.getManual());
     assertEquals(expectedFullDto.getColor(), response.getColor());
+    assertIterableEquals(Collections.singleton(expectedFullDto), Collections.singleton(response));
   }
 
   @Test

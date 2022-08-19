@@ -44,5 +44,5 @@ public class DetailController {
   public ResponseEntity<List<DetailDto>> findByListIds(@RequestBody Set<Long> ids){
     List<DetailDto> byIds = detailService.findByIds(ids);
     return ResponseEntity.ok(byIds);
-  };
+  }
 }
