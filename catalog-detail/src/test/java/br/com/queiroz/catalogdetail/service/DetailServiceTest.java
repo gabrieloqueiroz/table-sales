@@ -4,7 +4,6 @@ import br.com.queiroz.catalogdetail.dto.DetailDto;
 import br.com.queiroz.catalogdetail.model.Detail;
 import br.com.queiroz.catalogdetail.repository.DetailRepository;
 import br.com.queiroz.catalogdetail.util.DetailDtoMother;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

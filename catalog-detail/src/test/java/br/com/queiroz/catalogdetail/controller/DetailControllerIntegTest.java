@@ -3,7 +3,6 @@ package br.com.queiroz.catalogdetail.controller;
 import br.com.queiroz.catalogdetail.CatalogApplication;
 import br.com.queiroz.catalogdetail.config.SelfConfiguration;
 import br.com.queiroz.catalogdetail.dto.DetailDto;
-import br.com.queiroz.catalogdetail.util.DetailDtoMother;
 import br.om.queiroz.utils.ConstantsUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @ComponentScan("br.com.queiroz.catalogdetail.*")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { CatalogApplication.class, SelfConfiguration.class})
-public class DetailControllerTest {
+public class DetailControllerIntegTest {
 
   @Autowired
   private WebTestClient webTest;
@@ -42,11 +41,12 @@ public class DetailControllerTest {
   @Test
   public void should_return_detail_by_id(){
     //Given
+    Long requestId = 1L;
 
     //When
     DetailDto response = this.webTest
         .get()
-        .uri(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_DETAIL_SERVICE + ConstantsUtils.PATH_SEPARATOR + 1L).exchange()
+        .uri(ConstantsUtils.PATH_SEPARATOR + ConstantsUtils.PATH_DETAIL_SERVICE + ConstantsUtils.PATH_SEPARATOR + requestId).exchange()
         .expectStatus().is2xxSuccessful()
         .expectBody(DetailDto.class)
         .returnResult()
